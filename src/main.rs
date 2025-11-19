@@ -2,9 +2,8 @@ use std::env;
 use std::io::{self, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
-mod modules {
-    pub mod syshost;
-}
+mod modules;
+use crate::modules::colors::*;
 
 fn main() {
     loop {
@@ -15,7 +14,18 @@ fn main() {
         // get hostname
         let hostname = modules::syshost::get_host();
         // print!("[kalesh@{}]$ ", cwd.display());
-        print!("[{}@{}:{}]$ ", username, hostname, cwd.display());
+        print!(
+            "[{}{}{}@{}{}{}:{}{}{}]$ ",
+            GREEN,
+            username,
+            RESET,
+            RED,
+            hostname,
+            RESET,
+            CYAN,
+            cwd.display(),
+            RESET
+        );
         io::stdout().flush().unwrap();
 
         // read input
