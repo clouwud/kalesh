@@ -1,5 +1,5 @@
 {
-  description = "Minimal Rust shell project: kalesh";
+  description = "kalesh dev shell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
