@@ -2,6 +2,9 @@ use std::env;
 use std::io::{self, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
+mod modules {
+    pub mod syshost;
+}
 
 fn main() {
     loop {
@@ -9,8 +12,10 @@ fn main() {
         let cwd = env::current_dir().unwrap_or_else(|_| "/".into());
         // Get the username from the environment variable
         let username = env::var("USER").unwrap_or_else(|_| String::from("unknown_user"));
+        // get hostname
+        let hostname = modules::syshost::get_host();
         // print!("[kalesh@{}]$ ", cwd.display());
-        print!("[{}@{}]$ ", username, cwd.display());
+        print!("[{}@{}:{}]$ ", username, hostname, cwd.display());
         io::stdout().flush().unwrap();
 
         // read input
@@ -37,10 +42,25 @@ fn main() {
             continue;
         }
 
-        // handle build-in cd
+        // // handle build-in cd
+        // if parts[0] == "cd" {
+        //     let target = parts.get(1).cloned().unwrap_or("/");
+        //     if let Err(err) = env::set_current_dir(Path::new(target)) {
+        //         eprintln!("kalesh: cd: {}: {}", target, err);
+        //     }
+        //     continue;
+        // }
+
         if parts[0] == "cd" {
-            let target = parts.get(1).cloned().unwrap_or("/");
-            if let Err(err) = env::set_current_dir(Path::new(target)) {
+            // handle: `cd` → go to home
+            let target = if parts.len() == 1 {
+                // $HOME environment variable
+                env::var("HOME").unwrap_or_else(|_| "/".to_string())
+            } else {
+                parts[1].to_string()
+            };
+
+            if let Err(err) = env::set_current_dir(Path::new(&target)) {
                 eprintln!("kalesh: cd: {}: {}", target, err);
             }
             continue;
