@@ -3,7 +3,7 @@ use std::io::{self, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
 mod modules;
-use crate::modules::colors::*;
+use modules::colors::*;
 
 fn main() {
     loop {
