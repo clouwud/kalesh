@@ -16,12 +16,15 @@ fn main() {
         // print!("[kalesh@{}]$ ", cwd.display());
         print!(
             "[{}{}{}@{}{}{}:{}{}{}]$ ",
+            // ------------------
             GREEN,
             username,
             RESET,
+            // ------------------
             RED,
             hostname,
             RESET,
+            // ------------------
             CYAN,
             cwd.display(),
             RESET
