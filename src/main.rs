@@ -1,5 +1,7 @@
+#[allow(unused)]
 mod modules;
 use modules::colors::*;
+use modules::path::*;
 use std::env;
 use std::io::{self, Write};
 use std::path::Path;
@@ -9,11 +11,11 @@ fn main() {
     loop {
         // showing current dir in prompt
         let cwd = env::current_dir().unwrap_or_else(|_| "/".into());
+        let cwd_display = tilde(cwd.clone());
         // Get the username from the environment variable
         let username = env::var("USER").unwrap_or_else(|_| String::from("unknown_user"));
         // get hostname
         let hostname = modules::syshost::get_host();
-        // print!("[kalesh@{}]$ ", cwd.display());
         print!(
             "[{}{}{}@{}{}{}:{}{}{}]$ ",
             // ------------------
@@ -26,7 +28,8 @@ fn main() {
             RESET,
             // ------------------
             CYAN,
-            cwd.display(),
+            // cwd.display(),
+            cwd_display,
             RESET
         );
         io::stdout().flush().unwrap();
@@ -38,6 +41,7 @@ fn main() {
             break;
         }
 
+        // it continues when the arguments is empty
         let input = input.trim();
         if input.is_empty() {
             continue;
@@ -47,10 +51,6 @@ fn main() {
         if input == "exit" {
             println!("kalesh: exiting...");
             break;
-        }
-
-        if input != "clear" {
-            println!();
         }
 
         // parse tokens
@@ -69,7 +69,7 @@ fn main() {
         // }
 
         if parts[0] == "cd" {
-            // handle: `cd` → go to home
+            // handle: `cd` →  go to home
             let target = if parts.len() == 1 {
                 // $HOME environment variable
                 env::var("HOME").unwrap_or_else(|_| "/".to_string())
