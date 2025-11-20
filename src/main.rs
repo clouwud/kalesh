@@ -1,9 +1,9 @@
 mod modules;
+use modules::colors::*;
 use std::env;
 use std::io::{self, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
-use modules::colors::*;
 
 fn main() {
     loop {
@@ -47,6 +47,10 @@ fn main() {
         if input == "exit" {
             println!("kalesh: exiting...");
             break;
+        }
+
+        if input != "clear" {
+            println!();
         }
 
         // parse tokens
